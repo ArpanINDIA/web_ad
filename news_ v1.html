@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Auto News</title>
+  <style>
+    :root {
+      --bg-gradient: linear-gradient(120deg, #1e3c72, #2a5298);
+      --text-color: #fff;
+      --highlight: #ffe600;
+      --container-bg: rgba(0, 0, 0, 0.3);
+    }
+
+    [data-theme="dark"] {
+      --bg-gradient: linear-gradient(120deg, #121212, #1e1e1e);
+      --text-color: #e0e0e0;
+      --highlight: #bb86fc;
+      --container-bg: rgba(255, 255, 255, 0.05);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: var(--bg-gradient);
+      color: var(--text-color);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 1rem;
+      min-height: 100vh;
+      transition: background 0.5s, color 0.5s;
+    }
+
+    .news-container {
+      background: var(--container-bg);
+      padding: 2rem;
+      border-radius: 16px;
+      max-width: 800px;
+      text-align: center;
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+      width: 100%;
+    }
+
+    .news-title {
+      font-size: 2.2rem;
+      margin-bottom: 1rem;
+      color: var(--highlight);
+    }
+
+    .news-content {
+      font-size: 1.3rem;
+      line-height: 1.6;
+      opacity: 0;
+      animation: fadeIn 1s forwards;
+    }
+
+    .controls {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .toggle-btn, .voice-btn, .category-select {
+      background: var(--highlight);
+      color: #000;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+
+    .category-select {
+      padding: 0.5rem;
+    }
+
+    @keyframes fadeIn {
+      to {
+        opacity: 1;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="controls">
+    <button class="toggle-btn" onclick="toggleTheme()">Toggle Theme</button>
+    <select id="category" class="category-select" onchange="fetchNews()">
+      <option value="">All</option>
+      <option value="technology">Technology</option>
+      <option value="sports">Sports</option>
+      <option value="world">World</option>
+      <option value="health">Health</option>
+    </select>
+    <button class="voice-btn" onclick="startVoiceInput()">🎙️ Voice Category</button>
+  </div>
+
+  <div class="news-container">
+    <div class="news-title">Latest News</div>
+    <div class="news-content" id="news">Loading...</div>
+  </div>
+
+  <script>
+    const newsElement = document.getElementById('news');
+    const categoryElement = document.getElementById('category');
+
+    async function fetchNews() {
+      const category = categoryElement.value;
+      const apiKey = 'api key';
+      let url = `https://api.currentsapi.services/v1/latest-news?apiKey=${apiKey}`;
+      if (category) url += `&category=${category}`;
+
+      try {
+        const response = await fetch(url);
+        const data = await response.json();
+        const headlines = data.news.map(article => article.title);
+
+        let index = 0;
+        function showNews() {
+          newsElement.style.opacity = 0;
+          setTimeout(() => {
+            newsElement.innerText = headlines[index] || 'No news available.';
+            newsElement.style.animation = 'none';
+            void newsElement.offsetWidth;
+            newsElement.style.animation = 'fadeIn 1s forwards';
+            index = (index + 1) % headlines.length;
+          }, 500);
+        }
+
+        showNews();
+        setInterval(showNews, 3600000);
+      } catch (error) {
+        newsElement.innerText = 'Offline or failed to load news. Please check your API key.';
+      }
+    }
+
+    function toggleTheme() {
+      const theme = document.body.getAttribute('data-theme');
+      document.body.setAttribute('data-theme', theme === 'dark' ? 'light' : 'dark');
+    }
+
+    function startVoiceInput() {
+      if (!('webkitSpeechRecognition' in window)) {
+        alert('Voice input not supported in this browser.');
+        return;
+      }
+      const recognition = new webkitSpeechRecognition();
+      recognition.lang = 'en-US';
+      recognition.onresult = function(event) {
+        const result = event.results[0][0].transcript.toLowerCase();
+        const options = [...categoryElement.options];
+        const match = options.find(opt => result.includes(opt.value));
+        if (match) {
+          categoryElement.value = match.value;
+          fetchNews();
+        } else {
+          alert('No matching category found: ' + result);
+        }
+      };
+      recognition.start();
+    }
+
+    document.body.setAttribute('data-theme', 'light');
+    fetchNews();
+
+    // Self-contained inline service worker
+    if ('serviceWorker' in navigator) {
+      const swCode = `
+        const CACHE_NAME = 'auto-news-cache-v1';
+        const urlsToCache = [
+          location.href,
+          location.origin + location.pathname
+        ];
+
+        self.addEventListener('install', event => {
+          event.waitUntil(
+            caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache))
+          );
+        });
+
+        self.addEventListener('fetch', event => {
+          event.respondWith(
+            caches.match(event.request).then(response => response || fetch(event.request))
+          );
+        });
+      `;
+      const blob = new Blob([swCode], { type: 'application/javascript' });
+      const swUrl = URL.createObjectURL(blob);
+      navigator.serviceWorker.register(swUrl).then(() => {
+        console.log('Inline Service Worker registered');
+      }).catch(err => {
+        console.error('Service Worker registration failed:', err);
+      });
+    }
+  </script>
+</body>
+</html>
