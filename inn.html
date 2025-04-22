@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Inhanas – Timeless Realities</title>
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:wght@300;500;700&display=swap">
+  <style>
+    /* ...existing CSS... */
+    :root {
+      --primary-color: #4B2E83;
+      --accent-color: #DCCEF9;
+      --text-color: #2A2A2A;
+      --bg-light: #F9F7FF;
+      --glass-bg: rgba(255, 255, 255, 0.7);
+      --blur: blur(10px);
+    }
+
+
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: var(--bg-light);
+      color: var(--text-color);
+    }
+
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      padding: 1rem 2rem;
+      background: var(--glass-bg);
+      backdrop-filter: var(--blur);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .logo {
+      font-family: 'Great Vibes', cursive;
+      font-size: 2.5rem;
+      color: var(--primary-color);
+    }
+
+    nav a {
+      margin: 0 1.2rem;
+      text-decoration: none;
+      font-weight: 500;
+      color: var(--text-color);
+      transition: color 0.3s ease;
+    }
+
+    nav a:hover {
+      color: var(--primary-color);
+    }
+
+    .hero {
+      background: linear-gradient(to right, rgba(75, 46, 131, 0.7), rgba(230, 223, 241, 0.3)), url('optimized-image.webp') center/cover no-repeat;
+      padding: 6rem 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: #fff;
+      height: 100vh;
+    
+    }
+
+    .hero h1 {
+      font-size: 5rem;
+      font-family: 'Great Vibes', cursive;
+      text-shadow: 2px 2px 6px #000;
+      animation: fadeInUp 1s ease-in-out;
+    }
+
+    .hero p {
+      margin-top: 1rem;
+      font-size: 1.8rem;
+      max-width: 700px;
+      text-shadow: 1px 1px 4px #000;
+      animation: fadeIn 2s ease-in-out;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    section.timeline {
+      padding: 6rem 2rem 4rem;
+      background-color: #fff;
+    }
+
+    .event {
+      position: relative;
+      margin: 3rem auto;
+      padding: 2rem;
+      max-width: 800px;
+      background: #fff;
+      border-left: 8px solid var(--primary-color);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+      border-radius: 12px;
+      transition: transform 0.3s ease;
+    }
+
+    .event:hover {
+      transform: scale(1.02);
+    }
+
+    .event h3 {
+      color: var(--primary-color);
+      font-size: 1.8rem;
+    }
+
+    .event time {
+      display: block;
+      margin-top: 0.5rem;
+      font-size: 0.95rem;
+      color: #666;
+    }
+
+    .event p {
+      margin-top: 1rem;
+      font-size: 1.1rem;
+    }
+
+    footer {
+      background: var(--primary-color);
+      color: #fff;
+      text-align: center;
+      padding: 3rem 2rem;
+      font-size: 1rem;
+      line-height: 1.6;
+    }
+
+    /* new code */
+    /* @media screen and (max-width: 1024px) {
+      .hero h1 {
+        font-size: 4rem;
+      }
+
+      .hero p {
+        font-size: 1.5rem;
+      }
+
+      .event {
+        padding: 1.5rem;
+        margin: 2rem auto;
+      }
+    }
+
+    @media screen and (max-width: 480px) {
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      nav a {
+        margin: 0.5rem 0;
+        font-size: 0.9rem;
+      }
+
+      .hero h1 {
+        font-size: 2.5rem;
+      }
+
+      .hero p {
+        font-size: 1rem;
+      }
+
+      .event {
+        padding: 1rem;
+        margin: 1.5rem auto;
+      }
+    } */
+
+
+    @media screen and (max-width: 768px) {
+      .hero h1 {
+        font-size: 3rem;
+      }
+
+      .hero p {
+        font-size: 1.2rem;
+      }
+
+      nav a {
+        margin: 0 0.8rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="logo">Inhanas</div>
+    <nav>
+      <a href="#hero">Home</a>
+      <a href="#timeline">Timeline</a>
+      <a href="#footer">About</a>
+    </nav>
+  </header>
+
+  <section class="hero" id="hero">
+    <h1>Inhanas</h1>
+    <p>A futuristic capsule of stories, inventions, and humanity's dreams—written in light.</p>
+    <!-- <img src="optimized-image.webp" alt="Galaxy" loading="lazy"> -->
+  </section>
+
+
+  <section class="timeline" id="timeline">
+    <div class="event">
+      <h3>AI Awakens</h3>
+      <time>2040</time>
+      <p>Artificial Intelligence reaches a level of sentience, enabling ethical and creative partnerships with humans.</p>
+    </div>
+    <div class="event">
+      <h3>Humanity on Mars</h3>
+      <time>2065</time>
+      <p>The first permanent colony on Mars is established, marking the beginning of interplanetary civilization.</p>
+    </div>
+    <div class="event">
+      <h3>Global Peace Accord</h3>
+      <time>2090</time>
+      <p>World leaders sign a historic agreement to prioritize sustainability, equity, and global cooperation.</p>
+    </div>
+    <div class="event">
+      <h3>Interstellar Travel</h3>
+      <time>2105</time>
+      <p>Humanity achieves faster-than-light travel, enabling exploration of nearby star systems.</p>
+    </div>
+    <div class="event">
+      <h3>Universal Language</h3>
+      <time>2120</time>
+      <p>A universally adopted language emerges, fostering global unity and cultural exchange.</p>
+    </div>
+    <div class="event">
+      <h3>Quantum Computing Revolution</h3>
+      <time>2130</time>
+      <p>Quantum computing breakthroughs solve complex problems, revolutionizing industries worldwide.</p>
+    </div>
+    <div class="event">
+      <h3>First Contact</h3>
+      <time>2150</time>
+      <p>Humanity establishes communication with extraterrestrial life, redefining our place in the cosmos.</p>
+    </div>
+    <div class="event">
+      <h3>Galactic Federation</h3>
+      <time>2200</time>
+      <p>Earth joins a galactic federation, collaborating with other intelligent species for shared progress.</p>
+    </div>
+  </section>
+  </section>
+
+  <footer id="footer">
+    <p>&copy; 2025–2125 Inhanas. Designed as a living archive for past, present & imagined futures.</p>
+  </footer>
+
+  <!-- <script>
+    const navLinks = document.querySelectorAll("nav a");
+    navLinks.forEach(link => {
+      link.addEventListener("click", e => {
+        e.preventDefault();
+        const target = document.querySelector(link.getAttribute("href"));
+        if (target) {
+          window.scrollTo({
+            top: target.offsetTop - 80,
+            behavior: "smooth"
+          });
+        }
+      });
+    });
+  </script> -->
+  <script defer>
+    document.querySelectorAll("nav a").forEach(link => {
+      link.addEventListener("click", e => {
+        e.preventDefault();
+        document.querySelector(link.getAttribute("href")).scrollIntoView({
+          behavior: "smooth",
+          block: "start"
+        });
+      });
+    });
+  </script>
+</body>
+</html>
