@@ -1,4 +1,5 @@
-<!DOCTYPE html>
+
+  <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -93,29 +94,28 @@
 </head>
 <body>
   <div class="controls">
-    <button class="toggle-btn" onclick="toggleTheme()">Toggle Theme</button>
-    <select id="category" class="category-select" onchange="fetchNews()">
+    <button class="toggle-btn" aria-label="Toggle Theme" onclick="toggleTheme()">Toggle Theme</button>
+    <select id="category" class="category-select" aria-label="Select News Category" onchange="fetchNews()">
       <option value="">All</option>
       <option value="technology">Technology</option>
       <option value="sports">Sports</option>
       <option value="world">World</option>
       <option value="health">Health</option>
     </select>
-    <button class="voice-btn" onclick="startVoiceInput()">🎙️ Voice Category</button>
-    <select id="langSelect" class="lang-select">
+    <button class="voice-btn" aria-label="Voice Input for Category" onclick="startVoiceInput()">🎙️ Voice Category</button>
+    <select id="langSelect" class="lang-select" aria-label="Select Language">
       <option value="en">English</option>
       <option value="hi">Hindi</option>
       <option value="bn">Bengali</option>
     </select>
-    <button class="toggle-btn" onclick="nextHeadline()">🔁 Change News</button>
-    <button class="toggle-btn" onclick="translateCurrent()">🌍 Translate</button>
+    <button class="toggle-btn" aria-label="Change News Headline" onclick="nextHeadline()">🔁 Change News</button>
+    <button class="toggle-btn" aria-label="Translate News" onclick="translateCurrent()">🌍 Translate</button>
   </div>
 
   <div class="news-container">
     <div class="news-title">Latest News</div>
     <div class="news-content" id="news">Loading...</div>
   </div>
-
   <script src="/scripts_news_v2.js" async></script>
 </body>
 </html>
