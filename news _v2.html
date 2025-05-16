@@ -69,7 +69,7 @@
       justify-content: center;
     }
 
-    .toggle-btn, .voice-btn, .category-select {
+    .toggle-btn, .voice-btn, .category-select, .lang-select {
       background: var(--highlight);
       color: #000;
       border: none;
@@ -80,7 +80,7 @@
       transition: 0.3s;
     }
 
-    .category-select {
+    .category-select, .lang-select {
       padding: 0.5rem;
     }
 
@@ -102,6 +102,13 @@
       <option value="health">Health</option>
     </select>
     <button class="voice-btn" onclick="startVoiceInput()">🎙️ Voice Category</button>
+    <select id="langSelect" class="lang-select">
+      <option value="en">English</option>
+      <option value="hi">Hindi</option>
+      <option value="bn">Bengali</option>
+    </select>
+    <button class="toggle-btn" onclick="nextHeadline()">🔁 Change News</button>
+    <button class="toggle-btn" onclick="translateCurrent()">🌍 Translate</button>
   </div>
 
   <div class="news-container">
@@ -112,9 +119,16 @@
   <script>
     const newsElement = document.getElementById('news');
     const categoryElement = document.getElementById('category');
+    const langSelect = document.getElementById('langSelect');
+
+    let headlines = [];
+    let currentIndex = 0;
+    let originalText = '';
+    let currentLang = 'en';
 
     async function fetchNews() {
       const category = categoryElement.value;
+      currentLang = langSelect.value;
       const apiKey = 'your api key here'; // Replace with your actual API key
       let url = `https://api.currentsapi.services/v1/latest-news?apiKey=${apiKey}`;
       if (category) url += `&category=${category}`;
@@ -122,25 +136,58 @@
       try {
         const response = await fetch(url);
         const data = await response.json();
-        const headlines = data.news.map(article => article.title);
+        headlines = data.news.map(article => article.title);
+        currentIndex = 0;
 
-        let index = 0;
-        function showNews() {
-          newsElement.style.opacity = 0;
-          setTimeout(() => {
-            newsElement.innerText = headlines[index] || 'No news available.';
-            newsElement.style.animation = 'none';
-            void newsElement.offsetWidth;
-            newsElement.style.animation = 'fadeIn 1s forwards';
-            index = (index + 1) % headlines.length;
-          }, 500);
+        if (headlines.length === 0) {
+          animateFadeIn('No news found for this category.');
+          return;
         }
 
-        showNews();
-        setInterval(showNews, 3600000);
+        originalText = headlines[currentIndex];
+        animateFadeIn(originalText);
       } catch (error) {
-        newsElement.innerText = 'Offline or failed to load news. Please check your API key.';
+        animateFadeIn('Offline or failed to load news. Please check your API key.');
       }
+    }
+
+    function nextHeadline() {
+      if (headlines.length === 0) return;
+      currentIndex = (currentIndex + 1) % headlines.length;
+      originalText = headlines[currentIndex];
+      animateFadeIn(originalText);
+    }
+
+    function translateCurrent() {
+      const lang = langSelect.value;
+      if (lang === 'en') {
+        animateFadeIn(originalText);
+      } else {
+        translateText(originalText, lang);
+      }
+    }
+
+    async function translateText(text, targetLang) {
+      if (targetLang === 'en') {
+        animateFadeIn(text);
+        return;
+      }
+
+      try {
+        const res = await fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=${targetLang}&dt=t&q=${encodeURIComponent(text)}`);
+        const data = await res.json();
+        const translated = data[0][0][0];
+        animateFadeIn(translated);
+      } catch (err) {
+        animateFadeIn(text + ' (Translation failed)');
+      }
+    }
+
+    function animateFadeIn(content) {
+      newsElement.innerText = content;
+      newsElement.style.animation = 'none';
+      void newsElement.offsetWidth;
+      newsElement.style.animation = 'fadeIn 1s forwards';
     }
 
     function toggleTheme() {
@@ -172,8 +219,7 @@
     document.body.setAttribute('data-theme', 'light');
     fetchNews();
 
-    // Self-contained inline service worker
-    if ('serviceWorker' in navigator) {
+    if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
       const swCode = `
         const CACHE_NAME = 'auto-news-cache-v1';
         const urlsToCache = [
@@ -200,6 +246,8 @@
       }).catch(err => {
         console.error('Service Worker registration failed:', err);
       });
+    } else {
+      console.warn('Service Worker not registered: must be HTTPS or localhost');
     }
   </script>
 </body>
